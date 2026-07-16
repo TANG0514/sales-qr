@@ -1,0 +1,19 @@
+# 依赖
+node_modules/
+
+# Vercel 本地构建产物
+.vercel/
+
+# 环境变量 / 密钥
+.env
+.env.*
+!.env.example
+
+# 日志
+*.log
+
+# 本地数据残留
+data/
+
+# git bundle 打包文件（不应入库）
+*.bundle
