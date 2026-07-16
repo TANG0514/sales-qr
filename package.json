@@ -1,0 +1,16 @@
+{
+  "name": "sales-qr-vercel",
+  "version": "1.0.0",
+  "description": "业务员专属二维码 -> 患者扫码领券 -> 溯源业务员（Vercel Serverless + KV 版）",
+  "scripts": {
+    "start": "node dev.js",
+    "dev": "vercel dev"
+  },
+  "dependencies": {
+    "@vercel/kv": "^1.0.1",
+    "qrcode": "^1.5.3"
+  },
+  "devDependencies": {
+    "vercel": "^34.0.0"
+  }
+}
