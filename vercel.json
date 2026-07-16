@@ -3,6 +3,6 @@
   "buildCommand": null,
   "devCommand": null,
   "functions": {
-    "api/**/*.js": { "runtime": "nodejs20.x" }
+    "api/**/*.js": { "runtime": "@vercel/node@5.8.25" }
   }
 }
