@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>业务员二维码溯源原型</title>
+<style>
+  body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;margin:0;background:#f5f7fa;color:#1f2937}
+  .wrap{max-width:720px;margin:0 auto;padding:32px 20px}
+  h1{font-size:22px;margin:0 0 8px}
+  .card{background:#fff;border-radius:12px;padding:20px 22px;box-shadow:0 1px 4px rgba(0,0,0,.06);margin:16px 0}
+  .links a{display:inline-block;margin:6px 10px 6px 0;padding:10px 16px;background:#2563eb;color:#fff;border-radius:8px;text-decoration:none;font-size:14px}
+  .links a.alt{background:#059669}
+  code{background:#eef2ff;padding:2px 6px;border-radius:4px;font-size:13px}
+  ol{padding-left:20px;line-height:1.9}
+  .tip{color:#6b7280;font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🎯 业务员专属二维码 · 患者扫码领券 · 溯源系统（原型）</h1>
+  <div class="card">
+    <p class="tip">本地可运行演示。生产环境把 OpenID 模拟替换为微信网页授权即可。</p>
+    <div class="links">
+      <a href="/admin">① 业务员后台（生成二维码 / 看溯源）</a>
+      <a class="alt" href="/redeem">② 核销台（输入核销码）</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>核心流程</h3>
+    <ol>
+      <li>后台为每位业务员生成专属推广码（如 <code>SALE_A1B2C3</code>）与二维码。</li>
+      <li>二维码内容 = 领取页链接 <code>/claim?code=SALE_A1B2C3</code>，患者可保存/转发。</li>
+      <li>患者微信扫码打开领取页，点击领取 → 系统记录 <b>患者身份 + 来源业务员</b> 并生成核销码。</li>
+      <li>到店出示核销码，前台在核销台核验，标记已使用。</li>
+      <li>后台溯源报表按业务员统计：带来多少患者、发出多少券、核销多少。</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h3>试一试</h3>
+    <p>先去 <a href="/admin">业务员后台</a> 添加一个业务员，生成二维码后用手机/浏览器打开该二维码链接即可模拟患者领券。</p>
+  </div>
+</div>
+</body>
+</html>
