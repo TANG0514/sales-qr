@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>核销台</title>
+<style>
+  *{box-sizing:border-box}
+  body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;margin:0;background:#f5f7fa;color:#1f2937;display:flex;justify-content:center}
+  .box{width:100%;max-width:440px;margin-top:48px;background:#fff;border-radius:16px;padding:26px;box-shadow:0 8px 30px rgba(0,0,0,.08)}
+  h2{margin:0 0 4px;font-size:20px}
+  .sub{color:#6b7280;font-size:13px;margin-bottom:18px}
+  .row{display:flex;gap:10px}
+  input{padding:12px;border:1px solid #d1d5db;border-radius:8px;font-size:15px;flex:1;text-transform:uppercase}
+  button{padding:12px 18px;border:none;border-radius:8px;background:#059669;color:#fff;font-size:15px;cursor:pointer}
+  .result{margin-top:18px;padding:16px;border-radius:10px;display:none}
+  .result.ok{display:block;background:#ecfdf5;border:1px solid #a7f3d0}
+  .result.bad{display:block;background:#fef2f2;border:1px solid #fecaca}
+  .result .li{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed #e5e7eb;font-size:14px}
+  .result .li:last-child{border-bottom:none}
+  .result .k{color:#6b7280}
+  .result .v{font-weight:600}
+  .pill{display:inline-block;padding:3px 10px;border-radius:999px;font-size:13px}
+  .pill.no{background:#fee2e2;color:#b91c1c}
+  .pill.yes{background:#dcfce7;color:#15803d}
+</style>
+</head>
+<body>
+<div class="box">
+  <h2>🎫 代金券核销台</h2>
+  <div class="sub">输入患者出示的核销码，核验来源业务员与状态</div>
+  <div class="row">
+    <input id="code" placeholder="如 V1A2B3C4D5" autofocus>
+    <button id="chk">查询</button>
+  </div>
+  <div class="result" id="result"></div>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+async function check(){
+  const code = $('#code').value.trim().toUpperCase();
+  if (!code) return;
+  const r = await fetch('/api/redeem?code=' + encodeURIComponent(code));
+  const box = $('#result');
+  if (!r.ok){ const d = await r.json(); box.className='result bad'; box.innerHTML = `<div class="v">${d.error}</div>`; return; }
+  const d = await r.json();
+  const status = d.redeemed ? `<span class="pill yes">已核销</span>` : `<span class="pill no">未核销</span>`;
+  box.className = 'result ok';
+  box.innerHTML = `
+    <div class="li"><span class="k">核销码</span><span class="v">${d.voucher}</span></div>
+    <div class="li"><span class="k">来源业务员</span><span class="v">${d.sales_name}</span></div>
+    <div class="li"><span class="k">推广码</span><span class="v">${d.sales_code}</span></div>
+    <div class="li"><span class="k">金额</span><span class="v">¥${d.amount}</span></div>
+    <div class="li"><span class="k">领取时间</span><span class="v">${new Date(d.claimed_at).toLocaleString('zh-CN')}</span></div>
+    <div class="li"><span class="k">状态</span><span class="v">${status}</span></div>
+    ${d.redeemed ? `<div class="li"><span class="k">核销人/时间</span><span class="v">${d.redeemed_by} · ${new Date(d.redeemed_at).toLocaleString('zh-CN')}</span></div>` : ''}
+    ${d.redeemed ? '' : `<div class="row" style="margin-top:14px"><button id="doRedeem" style="width:100%">确认核销</button></div>`}
+  `;
+  const btn = $('#doRedeem');
+  if (btn) btn.onclick = async () => {
+    const rr = await fetch('/api/redeem', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ code: d.voucher, staff: '前台' }) });
+    if (rr.ok) check(); else alert('核销失败');
+  };
+}
+$('#chk').onclick = check;
+$('#code').addEventListener('keydown', e => { if (e.key === 'Enter') check(); });
+</script>
+</body>
+</html>
