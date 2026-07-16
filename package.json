@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@vercel/kv": "^1.0.1",
+    "@vercel/node": "5.8.25",
     "qrcode": "^1.5.3"
   },
   "devDependencies": {
